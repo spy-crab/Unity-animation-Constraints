@@ -25,7 +25,7 @@ Installation for this should be similar to any other Unity editor tools you have
 Hovering over labels in the Editor Window should give you a description on what it is, otherwise the following may give you a clearer idea on what is going on.
 
 <p align="center">
-<img width="474" height="43" alt="image" src="https://github.com/user-attachments/assets/bd002fd9-8d12-4c5d-ba09-cd13544d7f7d" />
+   <img width="474" height="45" alt="image" src="https://github.com/user-attachments/assets/d5271986-e928-4c00-87d4-b8e3bd48bb6c" />
 </p>
 
 | Label  | Description |
@@ -34,17 +34,17 @@ Hovering over labels in the Editor Window should give you a description on what 
 | Root Scene Object  | This is the object at the top of the hierarchy that holds the animation data.  |
 
 <p align="center">
-<img width="474" height="17" alt="image" src="https://github.com/user-attachments/assets/06d88615-ca75-4b0f-9d8b-0e699bd89d33" />
+   <img width="474" height="20" alt="image" src="https://github.com/user-attachments/assets/ec401f32-0bb9-4828-8c16-e4b62c36f2af" />
 </p>
 
 | Label  | Description |
 | ------------- | ------------- |
 | Source  | The source is the object the target inherits a relationship from: whatever keyframes source has, target will be constrained to them. |
 | Target  | The target is the object that will be animated, in relations to source.   |
-| Find  | The find buttons here will open a dropdown that let you pick the values for the source and target. <img width="479" height="245" alt="image" src="https://github.com/user-attachments/assets/a7a9fa1f-ae42-4d1f-9705-649174c12e23" /> _Dropdown that appears after clicking ‘find’_|
+| Find  | The find buttons here will open a dropdown that let you pick the values for the source and target. <img width="474" height="260" alt="image" src="https://github.com/user-attachments/assets/af8b4f28-6235-4a9c-a412-5ed7a5bf5895" /> _Dropdown that appears after clicking ‘find’_|
 
 <p align="center">
-<img width="474" height="85" alt="image" src="https://github.com/user-attachments/assets/97a4cb57-45ec-43d9-8aaf-b63bed1f0707" />
+   <img width="474" height="85" alt="image" src="https://github.com/user-attachments/assets/ce500759-e9e3-4314-b9bd-395d99afe222" />
 </p>
 
 _The offset, if enabled, allows you to offset the target bone from the original animation._
@@ -59,11 +59,11 @@ _The offset, if enabled, allows you to offset the target bone from the original 
 | Reset Offset | Sets offset values to 0 |
 
 <p align="center">
-<img width="474" height="104" alt="image" src="https://github.com/user-attachments/assets/d6646c69-2745-48b1-a925-03481dbbc333" />
+   <img width="474" height="100" alt="image" src="https://github.com/user-attachments/assets/1e372c36-1ae1-45fb-ac1d-c962e072fbc4" />
 </p>
 The mix, determines how much weight the constraint has over the target bone. A mix value of 1 will have the bone inherit values exactly, and a mix value of 0 will keep the bone at its base values.
 <p align="center">
-<img width="474" height="115" alt="image" src="https://github.com/user-attachments/assets/8f75a75d-47e0-4b54-9b45-6a443462c6b7" />
+   <img width="474" height="115" alt="image" src="https://github.com/user-attachments/assets/2a4c238e-a7f6-4caf-b344-ebc4076d8d35" />
 </p>
 To ease this process, you can also link these values. By linking these values they all inherit the same value from the top slider.
 
