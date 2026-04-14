@@ -1,4 +1,4 @@
-# Constraints [Ver. 0.1]
+# Constraints [Ver. 0.2]
 The Constraints tool is an Unity Editor Window tool that allows the user to create transformation constraints stored in the Animator. A transform constrant allows objects to move based on another objects behaviour as if they follow a relationship. After creation, the keyframes can be further adjusted manually by the user, or restored to their original form before adding the constraints. 
 
 ### [Download the latest release](https://github.com/spy-crab/Unity-animation-Constraints/releases/latest)
@@ -34,6 +34,9 @@ Hovering over labels in the Editor Window should give you a description on what 
 | ------------- | ------------- |
 | Source Animation  | Refers to the animation that you wish to fix broken keys from.  |
 | Root Scene Object  | This is the object at the top of the hierarchy that holds the animation data.  |
+
+> [!NOTE]
+> The object that holds the Animator shouldn't contain any animation data, Unity does not give those bindings paths, which causes the tool to detect them as ghost names. For best results: The parent object is the Root scene object, which contains the Animator.
 
 <p align="center">
    <img width="474" height="20" alt="image" src="https://github.com/user-attachments/assets/ec401f32-0bb9-4828-8c16-e4b62c36f2af" />
