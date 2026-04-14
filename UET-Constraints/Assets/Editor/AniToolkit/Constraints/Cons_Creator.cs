@@ -286,7 +286,7 @@ public class Cons_Creator
 
         //INFO TO COPY
         Vector3 sourceWorldTransformPos;
-        Vector3 sourceWorldRot;
+        //Vector3 sourceWorldRot; 
         Vector3 sourceWorldScale;
 
         //BASE TO BLEND OFF OF
@@ -379,7 +379,8 @@ public class Cons_Creator
 
                     sourceWorldTransformPos = parentTransform.InverseTransformPoint(bindingTransform.position); 
                     sourceWorldScale = (bindingTransform.localScale); //TODO FIX
-                    sourceWorldRot = parentTransform.InverseTransformPoint(bindingTransform.rotation.eulerAngles); 
+                    //sourceWorldRot = parentTransform.InverseTransformPoint(bindingTransform.rotation.eulerAngles); //a mystery...
+                    //Debug.Log(parentTransform.rotation.eulerAngles.z + "bind" + bindingTransform.rotation.eulerAngles.z + "sourc"+ sourceWorldRot.z);
 
 
                     //TODO RENAME THIS PROPERLY
@@ -448,11 +449,11 @@ public class Cons_Creator
                         case "localEulerAnglesRaw.x":
                             if (weightings[3] <= 1 && weightings[3] >= 0)
                             {
-                                keyValue = Mathf.Lerp(targetWorldRot.x + offset[3], (weightings[3] * (sourceWorldRot.x) + offset[3]), weightings[3]);
+                                keyValue = Mathf.Lerp(targetWorldRot.x + offset[3], (weightings[3] * (curve.keys[i].value) + offset[3]), weightings[3]);
                             }
                             else
                             {
-                                keyValue = (weightings[3] * (sourceWorldRot.x) + offset[3]);
+                                keyValue = (weightings[3] * (curve.keys[i].value) + offset[3]);
                             }
 
 
@@ -464,14 +465,14 @@ public class Cons_Creator
                         case "localEulerAnglesRaw.y":
                             if (weightings[4] <= 1 && weightings[4] >= 0)
                             {
-                                keyValue = Mathf.Lerp(targetWorldRot.y + offset[4], (weightings[4] * (sourceWorldRot.y) + offset[4]), weightings[4]);
+                                keyValue = Mathf.Lerp(targetWorldRot.y + offset[4], (weightings[4] * (curve.keys[i].value) + offset[4]), weightings[4]);
                             }
                             else
                             {
-                                keyValue = (weightings[4] * (sourceWorldRot.y) + offset[4]);
+                                keyValue = (weightings[4] * (curve.keys[i].value) + offset[4]);
                             }
 
-                            //Debug.Log(weightings[4]+ " mult " + sourceWorldRot.y);
+                            //Debug.Log(keyValue + "= " +weightings[4]+ " * " + sourceWorldRot.y +" | Tangent: "+  key.inTangent + " - " + key.outTangent);
                             key = new Keyframe(key.time, keyValue, key.inTangent * weightings[4], key.outTangent * weightings[4], key.inWeight, key.outWeight);
 
                             break;
@@ -479,11 +480,12 @@ public class Cons_Creator
                         case "localEulerAnglesRaw.z":
                             if (weightings[5] <= 1 && weightings[5] >= 0)
                             {
-                                keyValue = Mathf.Lerp(targetWorldRot.z + offset[5], (weightings[5] * (sourceWorldRot.z) + offset[5]), weightings[5]);
+                                //Debug.Log(curve.keys[i].value);
+                                keyValue = Mathf.Lerp(targetWorldRot.z + offset[5], (weightings[5] * (curve.keys[i].value) + offset[5]), weightings[5]);
                             }
                             else
                             {
-                                keyValue = (weightings[5] * (sourceWorldRot.z) + offset[5]);
+                                keyValue = (weightings[5] * (curve.keys[i].value) + offset[5]);
                             }
 
                             //keyValue = (weightings[5] * (sourceWorldRot.z) + offset[5]);
@@ -547,14 +549,24 @@ public class Cons_Creator
 
                     }//after this key has been altered.
                     #endregion
-
+                    
                     ks[i] = key;
 
                 } //END LOOP -- keys have been altered.
 
+                //now that we have the altered keys, we need to adjust the binding tangents further! unfortunately key.tangentMode cant be assigned  nor copied in the above
+                AnimationCurve oldCurve = curve; //to compare
+                Keyframe[] oldKeys = oldCurve.keys;
                 curve.keys = ks; //curve is made out of keyframe array.
+                for(int i = 0; i<ks.Length; i++)
+                { //get rid of any wierd nonesense
+                    AnimationUtility.SetKeyRightTangentMode(curve, i,AnimationUtility.TangentMode.Auto);
+                    AnimationUtility.SetKeyLeftTangentMode(curve, i, AnimationUtility.TangentMode.Auto); 
+                    AnimationUtility.SetKeyBroken(curve, i, true);
+                }
                 EditorCurveBinding newBinding = binding;
                 newBinding.path = currentTargetPath;
+
                 AnimationUtility.SetEditorCurve(clip, newBinding, curve); //set the target curve to the new curve.
             }
         }//ENDLOOP FOREACH: BINDINGS
