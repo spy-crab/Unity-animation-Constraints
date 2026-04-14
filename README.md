@@ -1,10 +1,12 @@
 # Constraints [Ver. 0.1]
 The Constraints tool is an Unity Editor Window tool that allows the user to create transformation constraints stored in the Animator. A transform constrant allows objects to move based on another objects behaviour as if they follow a relationship. After creation, the keyframes can be further adjusted manually by the user, or restored to their original form before adding the constraints. 
 
+### [Download the latest release](https://github.com/spy-crab/Unity-animation-Constraints/releases/latest)
+
 **Complete feature list**
    - Create transform/rotation/scale constraints
    - Adjust weight individually, or all together
-   - Adjust offset of the target bone, match offset to the targets values.
+   - Adjust offset of the target object, match offset to the targets values.
    - Set animation to Relative, allowing for movements to be relative to the source object.
 
 ### Let me know if you have any feedback, or run into issues. If you found the tool useful please give the repository a star!
@@ -47,7 +49,7 @@ Hovering over labels in the Editor Window should give you a description on what 
    <img width="474" height="85" alt="image" src="https://github.com/user-attachments/assets/ce500759-e9e3-4314-b9bd-395d99afe222" />
 </p>
 
-_The offset, if enabled, allows you to offset the target bone from the original animation._
+_The offset, if enabled, allows you to offset the target object from the original animation._
 
 | Label  | Description |
 | ------------- | ------------- |
@@ -61,7 +63,7 @@ _The offset, if enabled, allows you to offset the target bone from the original 
 <p align="center">
    <img width="474" height="100" alt="image" src="https://github.com/user-attachments/assets/1e372c36-1ae1-45fb-ac1d-c962e072fbc4" />
 </p>
-The mix, determines how much weight the constraint has over the target bone. A mix value of 1 will have the bone inherit values exactly, and a mix value of 0 will keep the bone at its base values.
+The mix, determines how much weight the constraint has over the target object. A mix value of 1 will have the object inherit values exactly, and a mix value of 0 will keep the object at its base values.
 <p align="center">
    <img width="474" height="115" alt="image" src="https://github.com/user-attachments/assets/2a4c238e-a7f6-4caf-b344-ebc4076d8d35" />
 </p>
@@ -85,7 +87,7 @@ To ease this process, you can also link these values. By linking these values th
 
 **Quimby, the cat**, for supervision. Bug inspector.
 
-[**Caiden Muro**](https://www.caidendmuro.design/), for UI, UX feedback. This tool used to be a lot uglier, and clunkier to use without their feedback!
+[**Caiden Muro**](https://www.caidendmuro.design/), for UI/UX feedback, and testing. This tool used to be a lot uglier, and clunkier to use without their feedback!
 
 [**Corbyn Lamar**](https://corbyn-lamar.com/), for your knowledge and helpful tips. They’re amazing!
 
