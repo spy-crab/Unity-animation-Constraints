@@ -1,3 +1,6 @@
+
+<img width="248" height="96" alt="constraints_logo png" src="https://github.com/user-attachments/assets/22bfc543-1c3f-4125-a48c-aecc4af63ab5" />
+
 # Constraints [Ver. 0.2]
 The Constraints tool is an Unity Editor Window tool that allows the user to create transformation constraints stored in the Animator. A transform constrant allows objects to move based on another objects behaviour as if they follow a relationship. After creation, the keyframes can be further adjusted manually by the user, or restored to their original form before adding the constraints. 
 
@@ -10,6 +13,9 @@ The Constraints tool is an Unity Editor Window tool that allows the user to crea
    - Set animation to Relative, allowing for movements to be relative to the source object.
 
 ### Let me know if you have any feedback, or run into issues. If you found the tool useful please give the repository a star!
+
+
+[Video coming soon!]
 
 ## Installation
 Installation for this should be similar to any other Unity editor tools you have installed. 
