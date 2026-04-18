@@ -254,9 +254,9 @@ public class Cons_Window : EditorWindow
                             offsetValues[3] = Cons_Creator.getTargetWorldRot().x;
                             offsetValues[4] = Cons_Creator.getTargetWorldRot().y;
                             offsetValues[5] = Cons_Creator.getTargetWorldRot().z;
-                            offsetValues[6] = Cons_Creator.getTargetWorldScale().x;
-                            offsetValues[7] = Cons_Creator.getTargetWorldScale().y;
-                            offsetValues[8] = Cons_Creator.getTargetWorldScale().z;
+                            offsetValues[6] = Cons_Creator.getTargetWorldScale().x - 1;
+                            offsetValues[7] = Cons_Creator.getTargetWorldScale().y -1;
+                            offsetValues[8] = Cons_Creator.getTargetWorldScale().z -1;
                         }
                         EditorGUILayout.Space(50);
                         GUIContent contentResetOffset = new GUIContent("Reset Offset", "Sets all offset values to 0");

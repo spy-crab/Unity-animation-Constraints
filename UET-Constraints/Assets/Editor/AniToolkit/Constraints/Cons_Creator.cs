@@ -285,14 +285,14 @@ public class Cons_Creator
         Vector3 sourceBaseTransVec;
 
         //INFO TO COPY
-        Vector3 sourceWorldTransformPos;
+        Vector3 sourceTransformPos;
         //Vector3 sourceWorldRot; 
-        Vector3 sourceWorldScale;
+        Vector3 sourceTransformScale;
 
         //BASE TO BLEND OFF OF
-        Vector3 targetWorldTransformPos;
-        Vector3 targetWorldRot;
-        Vector3 targetWorldScale;
+        Vector3 targetTransformPos;
+        Vector3 targetTransformRot;
+        Vector3 targetTransformScale;
 
         Undo.RecordObject(clip, "Create Constraint");
         //TODO: bool: ovwerite? //different text, and add warning
@@ -376,17 +376,16 @@ public class Cons_Creator
                     //binding transform is the SOURCE transform.
                     Transform bindingTransform = root.transform.Find(binding.path);
                     Transform parentTransform = root.transform.Find(getParentPath(currentTargetPath));
+                    //Debug.Log("the source path is: "+ binding.path + " and the parent is: "+ getParentPath(currentTargetPath));
 
-                    sourceWorldTransformPos = parentTransform.InverseTransformPoint(bindingTransform.position); 
-                    sourceWorldScale = (bindingTransform.localScale); //TODO FIX
-                    //sourceWorldRot = parentTransform.InverseTransformPoint(bindingTransform.rotation.eulerAngles); //a mystery...
+                    sourceTransformPos = parentTransform.InverseTransformPoint(bindingTransform.position); 
+                    sourceTransformScale = (bindingTransform.localScale); //TODO FIX flickering
+
                     //Debug.Log(parentTransform.rotation.eulerAngles.z + "bind" + bindingTransform.rotation.eulerAngles.z + "sourc"+ sourceWorldRot.z);
 
-
-                    //TODO RENAME THIS PROPERLY
-                    targetWorldTransformPos = parentTransform.InverseTransformPoint(constraintReference.targetWorldTransformPos);
-                    targetWorldScale = constraintReference.targetWorldScale; //parentTransform.InverseTransformPoint(constraintReference.targetWorldScale);
-                    targetWorldRot = parentTransform.InverseTransformPoint(constraintReference.targetWorldRot);
+                    targetTransformPos = parentTransform.InverseTransformPoint(constraintReference.targetWorldTransformPos); //TODO: investigate loss of data
+                    targetTransformScale = constraintReference.targetWorldScale; 
+                    targetTransformRot = parentTransform.InverseTransformPoint(constraintReference.targetWorldRot);
 
                     
 
@@ -399,16 +398,15 @@ public class Cons_Creator
                             if (weightings[0] <= 1f && weightings[0] >= 0f) //between 0 and 1, blend with the original, otherwise go ALL IN!!!
                             {
                                 //Debug.Log(targetWorldTransformPos.x); // TODO: this value keeps getting changed!
-                                keyValue = Mathf.Lerp(targetWorldTransformPos.x + offset[0], (weightings[0] * (sourceWorldTransformPos.x) + offset[0] + sourceBaseTransVec.x), weightings[0]);
+                                keyValue = Mathf.Lerp(targetTransformPos.x + offset[0], (weightings[0] * (sourceTransformPos.x) + offset[0] + sourceBaseTransVec.x), weightings[0]);
 
                                 //  keyValue = Mathf.Lerp(targetWorldRot.x + offset[3], (weightings[3] * (sourceWorldRot.x) + offset[3]), weightings[3]);
                             }
                             else
                             {
-                                keyValue = (weightings[0] * (sourceWorldTransformPos.x) + offset[0] + sourceBaseTransVec.x);
+                                keyValue = (weightings[0] * (sourceTransformPos.x) + offset[0] + sourceBaseTransVec.x);
                             }
-                            //Debug.Log(keyValue + " = : " + weightings[0] + "*" + sourceWorldTransformPos.x + " ) +" + offset[0]);
-                            //Debug.Log(keyValue);
+                            //Debug.Log(keyValue + " = : " + weightings[0] + "*" + sourceTransformPos.x + " ) +" + offset[0] + " what " + bindingTransform.position.x);
                             key = new Keyframe(key.time, keyValue, key.inTangent * weightings[0], key.outTangent* weightings[0], key.inWeight, key.outWeight);
                             //Debug.Log(key+ " edited");
 
@@ -417,11 +415,11 @@ public class Cons_Creator
                         case "m_LocalPosition.y":
                             if (weightings[1] <= 1f && weightings[1] >= 0f)
                             {
-                                keyValue = Mathf.Lerp(targetWorldTransformPos.y + offset[1], (weightings[1] * (sourceWorldTransformPos.y) + offset[1] + sourceBaseTransVec.y), weightings[1]);
+                                keyValue = Mathf.Lerp(targetTransformPos.y + offset[1], (weightings[1] * (sourceTransformPos.y) + offset[1] + sourceBaseTransVec.y), weightings[1]);
                             }
                             else
                             {
-                                keyValue = (weightings[1] * (sourceWorldTransformPos.y) + offset[1] + sourceBaseTransVec.y);
+                                keyValue = (weightings[1] * (sourceTransformPos.y) + offset[1] + sourceBaseTransVec.y);
                             }
                             //Debug.Log(keyValue + " and weight: " + weightings[1] + "" + offset[1]);
                             key = new Keyframe(key.time, keyValue, key.inTangent * weightings[1], key.outTangent * weightings[1], key.inWeight, key.outWeight);
@@ -431,11 +429,11 @@ public class Cons_Creator
                         case "m_LocalPosition.z":
                             if (weightings[2] <= 1 && weightings[2] >= 0)
                             {
-                                keyValue = Mathf.Lerp(targetWorldTransformPos.z + offset[2], (weightings[2] * (sourceWorldTransformPos.z) + offset[2]+ sourceBaseTransVec.z), weightings[2]);
+                                keyValue = Mathf.Lerp(targetTransformPos.z + offset[2], (weightings[2] * (sourceTransformPos.z) + offset[2]+ sourceBaseTransVec.z), weightings[2]);
                             }
                             else
                             {
-                                keyValue = (weightings[2] * (sourceWorldTransformPos.z) + offset[2] + sourceBaseTransVec.z);
+                                keyValue = (weightings[2] * (sourceTransformPos.z) + offset[2] + sourceBaseTransVec.z);
                             }
 
                             key = new Keyframe(key.time, keyValue, key.inTangent * weightings[2], key.outTangent * weightings[2], key.inWeight, key.outWeight);
@@ -449,7 +447,7 @@ public class Cons_Creator
                         case "localEulerAnglesRaw.x":
                             if (weightings[3] <= 1 && weightings[3] >= 0)
                             {
-                                keyValue = Mathf.Lerp(targetWorldRot.x + offset[3], (weightings[3] * (curve.keys[i].value) + offset[3]), weightings[3]);
+                                keyValue = Mathf.Lerp(targetTransformRot.x + offset[3], (weightings[3] * (curve.keys[i].value) + offset[3]), weightings[3]);
                             }
                             else
                             {
@@ -465,7 +463,7 @@ public class Cons_Creator
                         case "localEulerAnglesRaw.y":
                             if (weightings[4] <= 1 && weightings[4] >= 0)
                             {
-                                keyValue = Mathf.Lerp(targetWorldRot.y + offset[4], (weightings[4] * (curve.keys[i].value) + offset[4]), weightings[4]);
+                                keyValue = Mathf.Lerp(targetTransformRot.y + offset[4], (weightings[4] * (curve.keys[i].value) + offset[4]), weightings[4]);
                             }
                             else
                             {
@@ -481,7 +479,7 @@ public class Cons_Creator
                             if (weightings[5] <= 1 && weightings[5] >= 0)
                             {
                                 //Debug.Log(curve.keys[i].value);
-                                keyValue = Mathf.Lerp(targetWorldRot.z + offset[5], (weightings[5] * (curve.keys[i].value) + offset[5]), weightings[5]);
+                                keyValue = Mathf.Lerp(targetTransformRot.z + offset[5], (weightings[5] * (curve.keys[i].value) + offset[5]), weightings[5]);
                             }
                             else
                             {
@@ -496,14 +494,14 @@ public class Cons_Creator
 
                         //SCALE
                         case "m_LocalScale.x":
-                            //keyValue = (weightings[6] * (sourceWorldScale.x) + offset[6]);
+                            //keyValue = (weightings[6] * (sourceTransformScale.x) + offset[6]);
                             if (weightings[6] <= 1 && weightings[6] >= 0)
                             {
-                                keyValue = Mathf.Lerp(targetWorldScale.x + offset[6], (weightings[6] * (sourceWorldScale.x) + (offset[6] - 1)), weightings[6]);
+                                keyValue = Mathf.Lerp(targetTransformScale.x + offset[6], (weightings[6] * (sourceTransformScale.x) + (offset[6])), weightings[6]);
                             }
                             else
                             {
-                                keyValue = (weightings[6] * (sourceWorldScale.x) + (offset[6]-1));
+                                keyValue = (weightings[6] * (sourceTransformScale.x) + (offset[6]));
                             }
 
 
@@ -514,11 +512,11 @@ public class Cons_Creator
                         case "m_LocalScale.y":
                             if (weightings[7] <= 1 && weightings[7] >= 0)
                             {
-                                keyValue = Mathf.Lerp(targetWorldScale.y + offset[7], (weightings[7] * (sourceWorldScale.y) + (offset[7] - 1)), weightings[7]);
+                                keyValue = Mathf.Lerp(targetTransformScale.y + offset[7], (weightings[7] * (sourceTransformScale.y) + (offset[7])), weightings[7]);
                             }
                             else
                             {
-                                keyValue = (weightings[7] * (sourceWorldScale.y) + (offset[7]-1));
+                                keyValue = (weightings[7] * (sourceTransformScale.y) + (offset[7]));
                             }
 
 
@@ -530,11 +528,11 @@ public class Cons_Creator
                         case "m_LocalScale.z":
                             if (weightings[7] <= 1 && weightings[7] >= 0)
                             {
-                                keyValue = Mathf.Lerp(targetWorldScale.z + offset[8], (weightings[8] * (sourceWorldScale.z) + (offset[8] - 1)), weightings[8]);
+                                keyValue = Mathf.Lerp(targetTransformScale.z + offset[8], (weightings[8] * (sourceTransformScale.z) + (offset[8])), weightings[8]);
                             }
                             else
                             {
-                                keyValue = (weightings[8] * (sourceWorldScale.z) + (offset[8] - 1));
+                                keyValue = (weightings[8] * (sourceTransformScale.z) + (offset[8]));
                             }
 
                             key = new Keyframe(key.time, keyValue, key.inTangent * weightings[8], key.outTangent * weightings[8], key.inWeight, key.outWeight);
@@ -560,8 +558,8 @@ public class Cons_Creator
                 curve.keys = ks; //curve is made out of keyframe array.
                 for(int i = 0; i<ks.Length; i++)
                 { //get rid of any wierd nonesense
-                    AnimationUtility.SetKeyRightTangentMode(curve, i,AnimationUtility.TangentMode.Auto);
-                    AnimationUtility.SetKeyLeftTangentMode(curve, i, AnimationUtility.TangentMode.Auto); 
+                    AnimationUtility.SetKeyRightTangentMode(curve, i,AnimationUtility.TangentMode.ClampedAuto);
+                    AnimationUtility.SetKeyLeftTangentMode(curve, i, AnimationUtility.TangentMode.ClampedAuto); 
                     AnimationUtility.SetKeyBroken(curve, i, true);
                 }
                 EditorCurveBinding newBinding = binding;
@@ -589,7 +587,7 @@ public class Cons_Creator
                         ObjectReferenceKeyframe key = curve[i];
                         clip.SampleAnimation(root, key.time);
 
-                        //Debug.Log("--->"+ sourceWorldTransformPos + "\n" + sourceWorldScale + "\n"+ sourceWorldRot);
+                        //Debug.Log("--->"+ sourceTransformPos + "\n" + sourceTransformScale + "\n"+ sourceWorldRot);
 
                         UnityEngine.Object keyValue = key.value; 
                         switch (binding.propertyName) //this is trash.... 
@@ -702,8 +700,13 @@ public class Cons_Creator
             return null; //failsafe. should not be possible.
         }
         string bindingName = getBindingName(bindingPath); //sure whatever
-        string parentPath = bindingPath.TrimEnd("/" + bindingName); //does this work? lol
-        //Debug.Log(parentPath);
+        string parentPath = bindingPath.TrimEnd("/" + bindingName); 
+
+        if(parentPath == currentSourcePath || parentPath == currentTargetPath) //This happens if prefab is not configured correctly. I've done it before -- saves a headache getting a warning instead.
+        {
+            Debug.LogError("Please make sure that your objects are under a root, under the Animation controller-- their paths shouldnt be a single name -- Recieved: " + parentPath + "\n Which isn't correct.");
+            //return it anyway... 
+        }
 
         return parentPath;
 
