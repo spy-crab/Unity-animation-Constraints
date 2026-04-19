@@ -60,15 +60,42 @@ public class Cons_Object : ScriptableObject
         originalTransform = transform;
     }
 
+    //returns weight values
+    public float getWeightData(int index)
+    {
+        return mixWeightings[index];
+    }
+
+    //returns offset values
+    public float getOffsetData(int index)
+    {
+        return offsetValues[index];
+    }
 
     //////////////////////////////////METHODS/////////////////////////////////////////////////////////////////////////
-    public void setTransformValuesForWeights()
+    public void setTransformValuesForWeights() //og position
     {
         targetWorldTransformPos = originalTransform.position; //world position.
         targetWorldScale = originalTransform.localScale; //jittery?
         targetWorldRot = originalTransform.localRotation.eulerAngles; //quaternion converted to euler.
     }
 
+
+    public void setWeightings(float[] weightVal)
+    {
+        for(int i = 0; i < 9; i++) //if the user adds more to try and break it, not gonna look at it. 
+        {
+            mixWeightings[i] = weightVal[i];
+        }
+    }
+
+    public void setOffset(float[] offsetVal)
+    {
+        for(int i = 0; i<9; i++) //if the user adds more to try and break it, not gonna look at it.
+        {
+            offsetValues[i] = offsetVal[i];
+        }
+    }
 
 
     //method to help us get the backup info to reset back to default
@@ -84,5 +111,6 @@ public class Cons_Object : ScriptableObject
         }
         return null; //found nothing
     }
+
 
 }

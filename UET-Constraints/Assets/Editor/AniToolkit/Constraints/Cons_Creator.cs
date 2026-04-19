@@ -184,6 +184,29 @@ public class Cons_Creator
     {
         constraintReference = GetExistingScriptableObject();
     }
+
+    /*fills offset, and weight info based on what is saved on the scriptable object.
+     * 
+     */
+    public static void loadScriptableObjectData(float[] offset, float[] weights)
+    {
+        setExistingScriptableObject();
+        if (!constraintReference)//cant load if none exists.
+        {
+            Debug.LogWarning("Unity Constraints: No data to load!");
+        }
+
+        for(int i = 0; i < 9; i++)
+        {
+            offset[i] = constraintReference.getOffsetData(i);
+            weights[i]= constraintReference.getWeightData(i);
+
+        }
+        
+        Debug.Log(offset[0]+ "" + offset[1] + "" + offset[2]);
+
+    }
+
     /*
      * grabs the targetWorldTransformPos using the constraintReference.
      */
@@ -706,6 +729,7 @@ public class Cons_Creator
         {
             Debug.LogError("Please make sure that your objects are under a root, under the Animation controller-- their paths shouldnt be a single name -- Recieved: " + parentPath + "\n Which isn't correct.");
             //return it anyway... 
+            //TODO: maybe just prevent people from setting it up wrong in the first place
         }
 
         return parentPath;

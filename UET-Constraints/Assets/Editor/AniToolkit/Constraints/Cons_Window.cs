@@ -1,6 +1,9 @@
 using System.Linq;
 using UnityEditor;
+using UnityEditor.UIElements;
 using UnityEngine;
+
+//TODO: rewrite all this for UI Toolkit to gain access to other functions
 
 /*
  * Cons_Window is the EditorWindow script that contains the GUI for the tool.
@@ -57,6 +60,7 @@ public class Cons_Window : EditorWindow
     string[] toolbarStrings = { "Create" }; //for future updates, where I plan to add constraint editing, etc.
     private void OnGUI()
     {
+        
         EditorGUILayout.BeginHorizontal(); //toolBar, Help
         toolbarInt = GUILayout.Toolbar(toolbarInt, toolbarStrings);
         GUILayout.Space(200);
@@ -196,8 +200,8 @@ public class Cons_Window : EditorWindow
 
                     EditorGUI.BeginDisabledGroup(string.IsNullOrEmpty(source) || string.IsNullOrEmpty(target) || string.IsNullOrEmpty(target) && string.IsNullOrEmpty(source)); //if source or target are empty.. disable!
 
-                    //////////////////////////////////////////////////////////////////OFFSET 
-                    EditorGUILayout.BeginHorizontal(); //Offset, relative
+                        //////////////////////////////////////////////////////////////////OFFSET 
+                        EditorGUILayout.BeginHorizontal(); //Offset, relative
                     GUIContent contentOffset = new GUIContent("Offset", "Offsets the final transform of the target by the below values");
                     hideOffset = EditorGUILayout.Foldout(hideOffset, contentOffset);
                     GUILayout.Space(20);
@@ -401,6 +405,26 @@ public class Cons_Window : EditorWindow
                         try
                         {
                             Cons_Creator.resetKeysToBase(sourceAnim);
+                            //Reset all these settings too -- makes it easier. TODO: maybe just create a reset helper function?
+                            mixWeightings[0] = 0;
+                            mixWeightings[1] = 0;
+                            mixWeightings[2] = 0;
+                            mixWeightings[3] = 0;
+                            mixWeightings[4] = 0;
+                            mixWeightings[5] = 0;
+                            mixWeightings[6] = 0;
+                            mixWeightings[7] = 0;
+                            mixWeightings[8] = 0;
+
+                            offsetValues[0] = 0;
+                            offsetValues[1] = 0;
+                            offsetValues[2] = 0;
+                            offsetValues[3] = 0;
+                            offsetValues[4] = 0;
+                            offsetValues[5] = 0;
+                            offsetValues[6] = 0;
+                            offsetValues[7] = 0;
+                            offsetValues[8] = 0;
                             //AniConstraintContainer.resetKeysToBase(sourceAnim);
                         }
                         catch
@@ -414,6 +438,15 @@ public class Cons_Window : EditorWindow
                          *TODO: confirmation of destructive action. 
                          */
 
+                    }
+                    if (GUILayout.Button("Load data"))
+                    {
+                        Cons_Creator.setSourceandTargetBindings(source, target);
+                        Cons_Creator.setRoot(rootObj); //type mismatch can be ignored
+                        Cons_Creator.setCurrentAnimClip(sourceAnim);
+
+                        Cons_Creator.loadScriptableObjectData(offsetValues, mixWeightings);
+                        //TODO: load data, populate below
                     }
 
                     EditorGUI.EndDisabledGroup();  //if source or target are empty.. disable!
@@ -431,7 +464,7 @@ public class Cons_Window : EditorWindow
 
 
         //should this be collapsible?
-        EditorGUILayout.HelpBox("Version 0.1 - Early Access | Send feedback on GitHub ", MessageType.Info);
+        EditorGUILayout.HelpBox("Version 0.3 - Early Access | Send feedback on GitHub ", MessageType.Info);
     } //onGUI
 
     
