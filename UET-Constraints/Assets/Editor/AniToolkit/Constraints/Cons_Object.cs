@@ -25,6 +25,7 @@ public class Cons_Object : ScriptableObject
     public Vector3 targetWorldRot;
     public Vector3 targetWorldScale;
 
+
     public float[] mixWeightings = new float[9]; //this is silly.. maybe
                                                  //TRANS - 0,1,2   x,y,z
                                                  //ROT   - 3,4,5     x,y,z
@@ -83,8 +84,10 @@ public class Cons_Object : ScriptableObject
 
     public void setWeightings(float[] weightVal)
     {
+
         for(int i = 0; i < 9; i++) //if the user adds more to try and break it, not gonna look at it. 
         {
+            //Debug.Log(weightVal[i] + "weight");
             mixWeightings[i] = weightVal[i];
         }
     }
@@ -93,6 +96,7 @@ public class Cons_Object : ScriptableObject
     {
         for(int i = 0; i<9; i++) //if the user adds more to try and break it, not gonna look at it.
         {
+            //Debug.Log(offsetVal[i] + "offset");
             offsetValues[i] = offsetVal[i];
         }
     }

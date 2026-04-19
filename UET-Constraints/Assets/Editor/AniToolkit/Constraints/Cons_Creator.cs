@@ -186,7 +186,8 @@ public class Cons_Creator
     }
 
     /*fills offset, and weight info based on what is saved on the scriptable object.
-     * 
+     * offset[]: the offset values -- from Cons_Window
+     * weights[]: mix weight values -- from Cons_window
      */
     public static void loadScriptableObjectData(float[] offset, float[] weights)
     {
@@ -194,6 +195,7 @@ public class Cons_Creator
         if (!constraintReference)//cant load if none exists.
         {
             Debug.LogWarning("Unity Constraints: No data to load!");
+            return;
         }
 
         for(int i = 0; i < 9; i++)
@@ -203,7 +205,18 @@ public class Cons_Creator
 
         }
         
-        Debug.Log(offset[0]+ "" + offset[1] + "" + offset[2]);
+        //Debug.Log(offset[0]+ "" + offset[1] + "" + offset[2]);
+
+    }
+
+    /*For when you overwrite a constraint, save weight and offset values to scriptable object to allow Load Data
+     * 
+     */
+    public static void saveNewConstraintData(float[] offset, float[] weights)
+    {
+        constraintReference.setWeightings(weights);
+        constraintReference.setOffset(offset);
+        EditorUtility.SetDirty(constraintReference); //save
 
     }
 
@@ -368,6 +381,8 @@ public class Cons_Creator
             EditorUtility.SetDirty(constraintReference);
         }
 
+        saveNewConstraintData(offset, weightings);
+        EditorUtility.SetDirty(constraintReference);
 
         if (isRelative) //if it is relative then we set the value for sourceBaseTransVec. this is added into the transforms
         {
@@ -420,7 +435,6 @@ public class Cons_Creator
                         case "m_LocalPosition.x":
                             if (weightings[0] <= 1f && weightings[0] >= 0f) //between 0 and 1, blend with the original, otherwise go ALL IN!!!
                             {
-                                //Debug.Log(targetWorldTransformPos.x); // TODO: this value keeps getting changed!
                                 keyValue = Mathf.Lerp(targetTransformPos.x + offset[0], (weightings[0] * (sourceTransformPos.x) + offset[0] + sourceBaseTransVec.x), weightings[0]);
 
                                 //  keyValue = Mathf.Lerp(targetWorldRot.x + offset[3], (weightings[3] * (sourceWorldRot.x) + offset[3]), weightings[3]);

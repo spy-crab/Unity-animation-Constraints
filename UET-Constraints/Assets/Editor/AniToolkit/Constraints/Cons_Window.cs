@@ -388,6 +388,7 @@ public class Cons_Window : EditorWindow
                             Cons_Creator.setSourceandTargetBindings(source, target);
                             Cons_Creator.setRoot(rootObj); //type mismatch can be ignored
                             Cons_Creator.setCurrentAnimClip(sourceAnim);
+                            Cons_Creator.setExistingScriptableObject(); //if fails -- missing scriptable object!
                             Cons_Creator.createWeightedConstraint(sourceAnim, rootObj, mixWeightings, offsetValues, isRelative);
                         }
                     }
@@ -400,8 +401,9 @@ public class Cons_Window : EditorWindow
                     {
                         Cons_Creator.setSourceandTargetBindings(source, target);
                         Cons_Creator.setRoot(rootObj); //type mismatch can be ignored
-                        Cons_Creator.setExistingScriptableObject(); //if fails -- missing scriptable object!
                         Cons_Creator.setCurrentAnimClip(sourceAnim);
+                        Cons_Creator.setExistingScriptableObject(); //if fails -- missing scriptable object!
+
                         try
                         {
                             Cons_Creator.resetKeysToBase(sourceAnim);
@@ -444,9 +446,7 @@ public class Cons_Window : EditorWindow
                         Cons_Creator.setSourceandTargetBindings(source, target);
                         Cons_Creator.setRoot(rootObj); //type mismatch can be ignored
                         Cons_Creator.setCurrentAnimClip(sourceAnim);
-
                         Cons_Creator.loadScriptableObjectData(offsetValues, mixWeightings);
-                        //TODO: load data, populate below
                     }
 
                     EditorGUI.EndDisabledGroup();  //if source or target are empty.. disable!
