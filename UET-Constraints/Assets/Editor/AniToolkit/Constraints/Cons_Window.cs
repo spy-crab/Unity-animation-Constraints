@@ -171,6 +171,7 @@ public class Cons_Window : EditorWindow
 
                                     showSourceObjects = true;
                                     showTargetObjects = true;
+                                    GUI.FocusControl("");//in case they had their cursor in the text box.
                                     //exit selection. write selection into source
                                 }
                                 EditorGUI.indentLevel--;
@@ -189,6 +190,8 @@ public class Cons_Window : EditorWindow
                         {
                             showSourceObjects = true;
                             showTargetObjects = true;
+
+                            GUI.FocusControl("");//in case they had their cursor in the text box.
                             //exits out
                         }
 
@@ -251,16 +254,26 @@ public class Cons_Window : EditorWindow
                             Cons_Creator.setRoot(rootObj); //type mismatch can be ignored
                             Cons_Creator.setCurrentAnimClip(sourceAnim);
                             Cons_Creator.setExistingScriptableObject();
-                            //set offset values to be equal to constraintReference transform values.
-                            offsetValues[0] = Cons_Creator.getTargetWorldTransformPos().x;
-                            offsetValues[1] = Cons_Creator.getTargetWorldTransformPos().y;
-                            offsetValues[2] = Cons_Creator.getTargetWorldTransformPos().z;
-                            offsetValues[3] = Cons_Creator.getTargetWorldRot().x;
-                            offsetValues[4] = Cons_Creator.getTargetWorldRot().y;
-                            offsetValues[5] = Cons_Creator.getTargetWorldRot().z;
-                            offsetValues[6] = Cons_Creator.getTargetWorldScale().x - 1;
-                            offsetValues[7] = Cons_Creator.getTargetWorldScale().y -1;
-                            offsetValues[8] = Cons_Creator.getTargetWorldScale().z -1;
+                            if (Cons_Creator.GetExistingScriptableObject()) //opnly edit values if exists.
+                            {
+                                //set offset values to be equal to constraintReference transform values.
+                                offsetValues[0] = Cons_Creator.getTargetWorldTransformPos().x;
+                                offsetValues[1] = Cons_Creator.getTargetWorldTransformPos().y;
+                                offsetValues[2] = Cons_Creator.getTargetWorldTransformPos().z;
+                                offsetValues[3] = Cons_Creator.getTargetWorldRot().x;
+                                offsetValues[4] = Cons_Creator.getTargetWorldRot().y;
+                                offsetValues[5] = Cons_Creator.getTargetWorldRot().z;
+                                offsetValues[6] = Cons_Creator.getTargetWorldScale().x - 1;
+                                offsetValues[7] = Cons_Creator.getTargetWorldScale().y - 1;
+                                offsetValues[8] = Cons_Creator.getTargetWorldScale().z - 1;
+
+                                GUI.FocusControl("");//in case they had their cursor in the text box.
+                            }
+                            else
+                            {
+                                Debug.LogWarning("No data: Make sure to press 'key' first");
+                            }
+
                         }
                         EditorGUILayout.Space(50);
                         GUIContent contentResetOffset = new GUIContent("Reset Offset", "Sets all offset values to 0");
@@ -275,6 +288,8 @@ public class Cons_Window : EditorWindow
                             offsetValues[6] = 0;
                             offsetValues[7] = 0;
                             offsetValues[8] = 0;
+
+                            GUI.FocusControl("");//in case they had their cursor in the text box.
                         }
 
                         EditorGUILayout.EndHorizontal();//Match offset
@@ -404,41 +419,47 @@ public class Cons_Window : EditorWindow
                         Cons_Creator.setCurrentAnimClip(sourceAnim);
                         Cons_Creator.setExistingScriptableObject(); //if fails -- missing scriptable object!
 
-                        try
+                        bool confirmDelete = EditorUtility.DisplayDialog("Warning", "Are you sure? This will delete all keys on the target", "Delete", "Cancel");
+                        if (confirmDelete)
                         {
-                            Cons_Creator.resetKeysToBase(sourceAnim);
-                            //Reset all these settings too -- makes it easier. TODO: maybe just create a reset helper function?
-                            mixWeightings[0] = 0;
-                            mixWeightings[1] = 0;
-                            mixWeightings[2] = 0;
-                            mixWeightings[3] = 0;
-                            mixWeightings[4] = 0;
-                            mixWeightings[5] = 0;
-                            mixWeightings[6] = 0;
-                            mixWeightings[7] = 0;
-                            mixWeightings[8] = 0;
+                            if (Cons_Creator.GetExistingScriptableObject())
+                            {
+                                Cons_Creator.resetKeysToBase(sourceAnim);
+                                //Reset all these settings too -- makes it easier. TODO: maybe just create a reset helper function?
+                                mixWeightings[0] = 0;
+                                mixWeightings[1] = 0;
+                                mixWeightings[2] = 0;
+                                mixWeightings[3] = 0;
+                                mixWeightings[4] = 0;
+                                mixWeightings[5] = 0;
+                                mixWeightings[6] = 0;
+                                mixWeightings[7] = 0;
+                                mixWeightings[8] = 0;
 
-                            offsetValues[0] = 0;
-                            offsetValues[1] = 0;
-                            offsetValues[2] = 0;
-                            offsetValues[3] = 0;
-                            offsetValues[4] = 0;
-                            offsetValues[5] = 0;
-                            offsetValues[6] = 0;
-                            offsetValues[7] = 0;
-                            offsetValues[8] = 0;
-                            //AniConstraintContainer.resetKeysToBase(sourceAnim);
+                                offsetValues[0] = 0;
+                                offsetValues[1] = 0;
+                                offsetValues[2] = 0;
+                                offsetValues[3] = 0;
+                                offsetValues[4] = 0;
+                                offsetValues[5] = 0;
+                                offsetValues[6] = 0;
+                                offsetValues[7] = 0;
+                                offsetValues[8] = 0;
+
+
+                                GUI.FocusControl("");//in case they had their cursor in the text box.
+
+                            }
+                            else
+                            {
+                                Debug.LogWarning("No data: Make sure to press 'key' first");
+                            }
                         }
-                        catch
+                        else
                         {
-                            Debug.Log("Failed, check that you have source and target assigned");
+                            Debug.Log("Cancelled key deletion.");
                         }
-
-                        //EditorUtility.DisplayDialog("Warning", "Are you sure? This will delete all keys on the target", "I understand");
-
-                        /*
-                         *TODO: confirmation of destructive action. 
-                         */
+                            
 
                     }
 
@@ -448,7 +469,18 @@ public class Cons_Window : EditorWindow
                         Cons_Creator.setSourceandTargetBindings(source, target);
                         Cons_Creator.setRoot(rootObj); //type mismatch can be ignored
                         Cons_Creator.setCurrentAnimClip(sourceAnim);
-                        Cons_Creator.loadScriptableObjectData(offsetValues, mixWeightings);
+                        if (Cons_Creator.GetExistingScriptableObject())
+                        {
+                            linkedMix = false; //otherwise it overwrites everything.
+                            Cons_Creator.loadScriptableObjectData(offsetValues, mixWeightings);
+                        }
+                        else
+                        {
+                            Debug.LogWarning("No existing data to load: Make sure to press 'key' first");
+                        }
+                        
+
+                        GUI.FocusControl("");//in case they had their cursor in the text box.
                     }
 
                     EditorGUI.EndDisabledGroup();  //if source or target are empty.. disable!

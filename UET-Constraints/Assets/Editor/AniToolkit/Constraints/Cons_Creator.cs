@@ -131,7 +131,7 @@ public class Cons_Creator
                 }
                 else
                 {
-                    Debug.LogError("Could not find target transform! Are you in the right scene?");
+                    Debug.LogError("Could not find target transform! Please verify that you've selected the correct root GameObject");
                 }
 
 
@@ -150,7 +150,7 @@ public class Cons_Creator
                 }
                 else
                 {
-                    Debug.LogError("Could not find target transform! Are you in the right scene?");
+                    Debug.LogError("Could not find target transform! Please verify that you've selected the correct root GameObject");
                 }
 
 
@@ -636,7 +636,6 @@ public class Cons_Creator
                             //case "m_isActive":
                             default:
                                 //theoretically impossible....? can you have a curve boolean? lol?
-                                //keyValue = 
                                 key = new ObjectReferenceKeyframe { time = key.time, value = keyValue };
 
                                 break;
