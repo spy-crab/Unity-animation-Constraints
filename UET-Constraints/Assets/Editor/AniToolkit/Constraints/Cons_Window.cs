@@ -441,7 +441,9 @@ public class Cons_Window : EditorWindow
                          */
 
                     }
-                    if (GUILayout.Button("Load data"))
+
+                    GUIContent contentLoadData = new GUIContent("Load data", "Fills in offset, and mix values, previously keyed onto this constraint");
+                    if (GUILayout.Button(contentLoadData))
                     {
                         Cons_Creator.setSourceandTargetBindings(source, target);
                         Cons_Creator.setRoot(rootObj); //type mismatch can be ignored
