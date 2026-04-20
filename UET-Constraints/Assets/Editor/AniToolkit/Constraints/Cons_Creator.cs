@@ -118,7 +118,7 @@ public class Cons_Creator
     {
 
         var floatBindings = AnimationUtility.GetCurveBindings(clip); //Animations have two types of bindings, float bindings, and object bindings which are mysterious
-        var objectBindings = AnimationUtility.GetObjectReferenceCurveBindings(clip); //TODO
+        var objectBindings = AnimationUtility.GetObjectReferenceCurveBindings(clip); 
         foreach (var binding in floatBindings)
         {
             if (binding.path == currentTargetPath)
@@ -228,11 +228,9 @@ public class Cons_Creator
         Transform parentTransform = getParentTransform(root, currentTargetPath);
         if (!constraintReference)
         {
-            //Debug.Log("why no constraintReference assigned?");
             return Vector3.zero;
         }
-        //convert from world space to local space using the parent.
-        return parentTransform.InverseTransformPoint(constraintReference.targetWorldTransformPos); // maybe dont use constraintReference for this?
+        return constraintReference.targetWorldTransformPos; 
     }
     /*
    * grabs the targetWorldRot using the constraintReference.
@@ -242,11 +240,9 @@ public class Cons_Creator
         Transform parentTransform = getParentTransform(root, currentTargetPath);
         if (!constraintReference)
         {
-            //Debug.Log("why no constraintReference assigned?");
             return Vector3.zero;
         }
-        //convert from world space to local space using the parent.
-        return parentTransform.InverseTransformPoint(constraintReference.targetWorldRot);
+        return constraintReference.targetWorldRot;
     }
 
     /*
@@ -257,10 +253,8 @@ public class Cons_Creator
         //Transform parentTransform = getParentTransform(root, currentTargetPath);
         if (!constraintReference)
         {
-            //Debug.Log("why no constraintReference assigned?");
             return Vector3.zero;
         }
-        //there is no 'world space scale' so no calculation as opposed to the other two..
         return constraintReference.targetWorldScale;
     }
 
@@ -315,7 +309,6 @@ public class Cons_Creator
             return;
         }
 
-        //TODO fix these namings. they are haunted from the past.
         //RELATIVE TRANSFORM
         Transform sourceBaseTransform;
         Vector3 sourceBaseTransVec;
@@ -331,7 +324,6 @@ public class Cons_Creator
         Vector3 targetTransformScale;
 
         Undo.RecordObject(clip, "Create Constraint");
-        //TODO: bool: ovwerite? //different text, and add warning
 
         //float curves. object bindings found below.
         var floatBindings = AnimationUtility.GetCurveBindings(clip);
@@ -421,9 +413,9 @@ public class Cons_Creator
 
                     //Debug.Log(parentTransform.rotation.eulerAngles.z + "bind" + bindingTransform.rotation.eulerAngles.z + "sourc"+ sourceWorldRot.z);
 
-                    targetTransformPos = parentTransform.InverseTransformPoint(constraintReference.targetWorldTransformPos); //TODO: investigate loss of data
+                    targetTransformPos = constraintReference.targetWorldTransformPos; 
                     targetTransformScale = constraintReference.targetWorldScale; 
-                    targetTransformRot = parentTransform.InverseTransformPoint(constraintReference.targetWorldRot);
+                    targetTransformRot = constraintReference.targetWorldRot;
 
                     
 

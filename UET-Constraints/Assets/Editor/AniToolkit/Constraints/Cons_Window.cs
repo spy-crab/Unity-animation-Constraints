@@ -64,10 +64,10 @@ public class Cons_Window : EditorWindow
         EditorGUILayout.BeginHorizontal(); //toolBar, Help
         toolbarInt = GUILayout.Toolbar(toolbarInt, toolbarStrings);
         GUILayout.Space(200);
-        GUIContent contentHelp = new GUIContent("Help", "https://github.com/spy-crab/Unity-animation-Constraints"); //TODO change lol
+        GUIContent contentHelp = new GUIContent("Help", "https://github.com/spy-crab/Unity-animation-Constraints"); 
         if (GUILayout.Button(contentHelp, GUILayout.Width(50)))
         {
-            Application.OpenURL("https://github.com/spy-crab/Unity-animation-Constraints"); //temporary
+            Application.OpenURL("https://github.com/spy-crab/Unity-animation-Constraints"); 
         }
         EditorGUILayout.EndHorizontal(); //toolBar, Help
 
@@ -425,7 +425,7 @@ public class Cons_Window : EditorWindow
                             if (Cons_Creator.GetExistingScriptableObject())
                             {
                                 Cons_Creator.resetKeysToBase(sourceAnim);
-                                //Reset all these settings too -- makes it easier. TODO: maybe just create a reset helper function?
+                                //Reset all these settings too -- makes it easier.
                                 mixWeightings[0] = 0;
                                 mixWeightings[1] = 0;
                                 mixWeightings[2] = 0;

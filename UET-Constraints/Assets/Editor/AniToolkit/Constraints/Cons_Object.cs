@@ -76,7 +76,7 @@ public class Cons_Object : ScriptableObject
     //////////////////////////////////METHODS/////////////////////////////////////////////////////////////////////////
     public void setTransformValuesForWeights() //og position
     {
-        targetWorldTransformPos = originalTransform.position; //world position.
+        targetWorldTransformPos = originalTransform.localPosition; 
         targetWorldScale = originalTransform.localScale; //jittery?
         targetWorldRot = originalTransform.localRotation.eulerAngles; //quaternion converted to euler.
     }
