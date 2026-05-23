@@ -15,13 +15,16 @@ using static Cons_Object; //the scriptable object
 public class Cons_Creator
 {
     /////INPUTS///////////////////////
+    #region INPUTS
     public static AnimationClip animClip; //the animation clip we are editing
     private static GameObject root; //game object at the top of the heirarchy.
     private static string currentSourcePath; //path of hte object that will be used as a reference
     private static string currentTargetPath; //path of the object that will be edited
     public static Transform targetTransform; //transform of the Target, will be assigned later
+    #endregion INPUTS
 
     ///////////////////////////
+    #region ANIMDATA
     public class SharedProperty //the list of bindings and animation data within the animClip.
     {
         //Where the invalid animation clips are stored
@@ -33,9 +36,10 @@ public class Cons_Creator
     public static HashSet<SharedProperty> pathToSharedProperty = new();
 
     private static Cons_Object constraintReference; //scriptable object
+    #endregion ANIMDATA
 
     /////////////////////////////////GETTERS AND SETTERS///
-
+    #region GETTERS AND SETTERS
 
     /*
     * Assigns local variables
@@ -83,16 +87,16 @@ public class Cons_Creator
         pathToSharedProperty.Clear();
         try
         {
-            var floatCurves = AnimationUtility.GetCurveBindings(clip);
-            foreach (var binding in floatCurves)
+            EditorCurveBinding[] floatCurves = AnimationUtility.GetCurveBindings(clip);
+            foreach (EditorCurveBinding binding in floatCurves)
             {
                 CheckBinding(binding, clip);
             }
-                
+
 
             // Object reference curves
-            var objectCurves = AnimationUtility.GetObjectReferenceCurveBindings(clip);
-            foreach (var binding in objectCurves)
+            EditorCurveBinding[] objectCurves = AnimationUtility.GetObjectReferenceCurveBindings(clip);
+            foreach (EditorCurveBinding binding in objectCurves)
             {
                 CheckBinding(binding, clip);
             }
@@ -117,9 +121,9 @@ public class Cons_Creator
     public static void setTransform(AnimationClip clip, GameObject root)
     {
 
-        var floatBindings = AnimationUtility.GetCurveBindings(clip); //Animations have two types of bindings, float bindings, and object bindings which are mysterious
-        var objectBindings = AnimationUtility.GetObjectReferenceCurveBindings(clip); 
-        foreach (var binding in floatBindings)
+        EditorCurveBinding[] floatBindings = AnimationUtility.GetCurveBindings(clip); //Animations have two types of bindings, float bindings, and object bindings which are mysterious
+        EditorCurveBinding[] objectBindings = AnimationUtility.GetObjectReferenceCurveBindings(clip); 
+        foreach (EditorCurveBinding binding in floatBindings)
         {
             if (binding.path == currentTargetPath)
             {
@@ -138,7 +142,7 @@ public class Cons_Creator
             }
 
         }
-        foreach (var binding in objectBindings) //just in case
+        foreach (EditorCurveBinding binding in objectBindings) //just in case
         {
             if (binding.path == currentTargetPath)
             {
@@ -185,6 +189,161 @@ public class Cons_Creator
         constraintReference = GetExistingScriptableObject();
     }
 
+
+
+
+    /*This function returns the name of the binding. Ex. spine1/spine2/spine3/head_1  -> head_1
+     * This makes it soooo much easier to read and differentiate between objects.
+     * string bindingPath : this is the path of the binding. Look at example above.
+     */
+    public static string getBindingName(string bindingPath)
+    {
+        string path = bindingPath;
+        //Debug.Log(path + "\n" + binding.path);
+        string currentWord = "";
+        for (int i = 0; i < path.Length; i++)
+        {
+            if (path[i] == '/')
+            {
+                currentWord = ""; //we do not care if the word is not the last word.
+                i++;//skip past this buffoon!
+            }
+
+            if (i == path.Length - 1) //had to check if we are at the end of the string otherwise it wont add the entire last word.
+            {
+                currentWord += path[i];
+
+            }
+            else
+            {
+                currentWord += path[i];
+            }
+
+        }
+        return currentWord; //temp
+    }
+
+    /*This method returns the parent string, to assist with findParentTransform.
+     *  string bindingPath : the bindingPath, should be assigned
+     */
+    public static string getParentPath(string bindingPath)
+    {
+        if (bindingPath == null)
+        {
+            Debug.LogError("getParentName: Failed, bindingPath does was not assigned.");
+            return null; //failsafe. should not be possible.
+        }
+        string bindingName = getBindingName(bindingPath); //sure whatever
+        string parentPath = bindingPath.TrimEnd("/" + bindingName);
+
+        if (parentPath == currentSourcePath || parentPath == currentTargetPath) //This happens if prefab is not configured correctly. I've done it before -- saves a headache getting a warning instead.
+        {
+            Debug.LogError("Please make sure that your objects are under a root, under the Animation controller-- their paths shouldnt be a single name -- Recieved: " + parentPath + "\n Which isn't correct.");
+            //return it anyway... 
+            //TODO: maybe just prevent people from setting it up wrong in the first place
+        }
+
+        return parentPath;
+
+    }
+
+    /*This method gets the parent Transform, and returns it.
+     * Used to convert from world transform to local transform.
+     * perhaps change this to a setter, and create another method in Cons_Object as a getter?
+     * GameObject root: root game object
+     * string bindingPath: the parent binding path
+     */
+    public static Transform getParentTransform(GameObject root, string bindingPath)
+    {
+        string parentPath = getParentPath(bindingPath);
+        try
+        {
+            Transform parentTransform = root.transform.Find(parentPath);
+            return parentTransform;
+        }
+        catch
+        {
+            Debug.LogError("getParentTransform: Failed to grab parent Transform.");
+            return null;
+        }
+
+    }
+
+
+    /*This function returns the name of the binding. Ex. spine1/spine2/spine3/head_1  -> head_1
+     * This makes it soooo much easier to read and differentiate between objects.
+     * EditorCurveBinding binding: the binding....
+     */
+    public static string getBindingName(EditorCurveBinding binding)
+    {
+        string path = binding.path;
+        //HashSet<string> bindingPathWords = new HashSet<string>();
+        //Debug.Log(path + "\n" + binding.path);
+        string currentWord = "";
+        for (int i = 0; i < path.Length; i++)
+        {
+            if (path[i] == '/')
+            {
+                currentWord = ""; //we do not care if the word is not the last word.
+                i++;//skip past this buffoon!
+            }
+
+            if (i == path.Length - 1) //had to check if we are at the end of the string otherwise it wont add the entire last word.
+            {
+                currentWord += path[i];
+
+            }
+            else
+            {
+                currentWord += path[i]; //not at the end of the string, you may continue.
+            }
+
+        }
+        return currentWord;
+    }
+
+
+    /*
+ * grabs the targetWorldTransformPos using the constraintReference.
+ */
+    public static Vector3 getTargetWorldTransformPos()
+    {
+        Transform parentTransform = getParentTransform(root, currentTargetPath);
+        if (!constraintReference)
+        {
+            return Vector3.zero;
+        }
+        return constraintReference.targetWorldTransformPos;
+    }
+    /*
+   * grabs the targetWorldRot using the constraintReference.
+   */
+    public static Vector3 getTargetWorldRot()
+    {
+        Transform parentTransform = getParentTransform(root, currentTargetPath);
+        if (!constraintReference)
+        {
+            return Vector3.zero;
+        }
+        return constraintReference.targetWorldRot;
+    }
+
+    /*
+   * grabs the targetWorldScale using the constraintReference.
+   */
+    public static Vector3 getTargetWorldScale()
+    {
+        //Transform parentTransform = getParentTransform(root, currentTargetPath);
+        if (!constraintReference)
+        {
+            return Vector3.zero;
+        }
+        return constraintReference.targetWorldScale;
+    }
+
+    #endregion GETTERS AND SETTERS
+
+
     /*fills offset, and weight info based on what is saved on the scriptable object.
      * offset[]: the offset values -- from Cons_Window
      * weights[]: mix weight values -- from Cons_window
@@ -218,44 +377,6 @@ public class Cons_Creator
         constraintReference.setOffset(offset);
         EditorUtility.SetDirty(constraintReference); //save
 
-    }
-
-    /*
-     * grabs the targetWorldTransformPos using the constraintReference.
-     */
-    public static Vector3 getTargetWorldTransformPos()
-    {
-        Transform parentTransform = getParentTransform(root, currentTargetPath);
-        if (!constraintReference)
-        {
-            return Vector3.zero;
-        }
-        return constraintReference.targetWorldTransformPos; 
-    }
-    /*
-   * grabs the targetWorldRot using the constraintReference.
-   */
-    public static Vector3 getTargetWorldRot()
-    {
-        Transform parentTransform = getParentTransform(root, currentTargetPath);
-        if (!constraintReference)
-        {
-            return Vector3.zero;
-        }
-        return constraintReference.targetWorldRot;
-    }
-
-    /*
-   * grabs the targetWorldScale using the constraintReference.
-   */
-    public static Vector3 getTargetWorldScale()
-    {
-        //Transform parentTransform = getParentTransform(root, currentTargetPath);
-        if (!constraintReference)
-        {
-            return Vector3.zero;
-        }
-        return constraintReference.targetWorldScale;
     }
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -653,115 +774,7 @@ public class Cons_Creator
 
     }
 
-    /*This function returns the name of the binding. Ex. spine1/spine2/spine3/head_1  -> head_1
-     * This makes it soooo much easier to read and differentiate between objects.
-     * EditorCurveBinding binding: the binding....
-     */
-    public static string getBindingName(EditorCurveBinding binding)
-    {
-        string path = binding.path;
-        //HashSet<string> bindingPathWords = new HashSet<string>();
-        //Debug.Log(path + "\n" + binding.path);
-        string currentWord = "";
-        for (int i = 0; i < path.Length; i++)
-        {
-            if (path[i] == '/')
-            {
-                currentWord = ""; //we do not care if the word is not the last word.
-                i++;//skip past this buffoon!
-            }
 
-            if (i == path.Length - 1) //had to check if we are at the end of the string otherwise it wont add the entire last word.
-            {
-                currentWord += path[i];
-
-            }
-            else
-            {
-                currentWord += path[i]; //not at the end of the string, you may continue.
-            }
-
-        }
-        return currentWord;
-    }
-
-
-    /*This function returns the name of the binding. Ex. spine1/spine2/spine3/head_1  -> head_1
-     * This makes it soooo much easier to read and differentiate between objects.
-     * string bindingPath : this is the path of the binding. Look at example above.
-     */
-    public static string getBindingName(string bindingPath)
-    {
-        string path = bindingPath;
-        //Debug.Log(path + "\n" + binding.path);
-        string currentWord = "";
-        for (int i = 0; i < path.Length; i++)
-        {
-            if (path[i] == '/')
-            {
-                currentWord = ""; //we do not care if the word is not the last word.
-                i++;//skip past this buffoon!
-            }
-
-            if (i == path.Length - 1) //had to check if we are at the end of the string otherwise it wont add the entire last word.
-            {
-                currentWord += path[i];
-
-            }
-            else
-            {
-                currentWord += path[i];
-            }
-
-        }
-        return currentWord; //temp
-    }
-
-    /*This method returns the parent string, to assist with findParentTransform.
-     *  string bindingPath : the bindingPath, should be assigned
-     */
-    public static string getParentPath(string bindingPath)
-    {
-        if (bindingPath == null)
-        {
-            Debug.LogError("getParentName: Failed, bindingPath does was not assigned.");
-            return null; //failsafe. should not be possible.
-        }
-        string bindingName = getBindingName(bindingPath); //sure whatever
-        string parentPath = bindingPath.TrimEnd("/" + bindingName); 
-
-        if(parentPath == currentSourcePath || parentPath == currentTargetPath) //This happens if prefab is not configured correctly. I've done it before -- saves a headache getting a warning instead.
-        {
-            Debug.LogError("Please make sure that your objects are under a root, under the Animation controller-- their paths shouldnt be a single name -- Recieved: " + parentPath + "\n Which isn't correct.");
-            //return it anyway... 
-            //TODO: maybe just prevent people from setting it up wrong in the first place
-        }
-
-        return parentPath;
-
-    }
-
-    /*This method gets the parent Transform, and returns it.
-     * Used to convert from world transform to local transform.
-     * perhaps change this to a setter, and create another method in Cons_Object as a getter?
-     * GameObject root: root game object
-     * string bindingPath: the parent binding path
-     */
-    public static Transform getParentTransform(GameObject root, string bindingPath)
-    {
-        string parentPath = getParentPath(bindingPath);
-        try
-        {
-            Transform parentTransform = root.transform.Find(parentPath);
-            return parentTransform;
-        }
-        catch
-        {
-            Debug.LogError("getParentTransform: Failed to grab parent Transform.");
-            return null;
-        }
-
-    }
 
 
     /*This is the function that actually creates the Scriptable Object!

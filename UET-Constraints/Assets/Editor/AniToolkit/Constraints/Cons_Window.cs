@@ -12,14 +12,16 @@ using UnityEngine;
 
 public class Cons_Window : EditorWindow
 {
-
+    #region animData
     AnimationClip sourceAnim; //source animation controller to search bones from.
 
     private string source; //source bone to inherit transformations from
     private string target; //target bone to be affected by source.
     private GameObject rootObj; //the root, used to reference bone names, world transformation to local, etc.
+    #endregion animData
 
     //GUI STUFF
+    #region GUI STUFF
     //may not be necessary but this is what i did.
     private bool showSourceObjects = true; //bone selection for source
     private bool showTargetObjects = true;//bone selection for target
@@ -30,8 +32,11 @@ public class Cons_Window : EditorWindow
     private float maxValue = 1; // for the mix slider
     private int flipFlop = 1; //used to flip flop the horizontal layouts between gray and dark gray
 
+    #endregion GUI STUFF
+
 
     //individual transforms will be calculated within
+    #region Mix & Offset
     //mix vars
     private float mixVal = 1; //range 0-100 -> this is the value that gets set for all the values. this does not need to be global.
     private bool linkedMix; //bool to enable changing all values at once
@@ -46,6 +51,7 @@ public class Cons_Window : EditorWindow
                         0 , 0 , 0, //ROT   - 3,4,5     x,y,z
                         0 , 0 , 0}; //SCALE  - 6,7,8   x,y,z
 
+    #endregion Mix & Offset
 
     [MenuItem("Animation Editor Toolkit/Animation Constraints")]
     static void Init() 
